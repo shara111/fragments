@@ -11,5 +11,8 @@
     "url": "git+https://github.com/shara111/fragments.git"
   },
   "author": "Sukhman Hara",
-  "license": "UNLICENSED"
+  "license": "UNLICENSED",
+  "devDependencies": {
+    "prettier": "3.3.3"
+  }
 }
