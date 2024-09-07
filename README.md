@@ -24,6 +24,9 @@ npm init @eslint/config@latest
 4) The command to install the nodemon package, so that it automatically reload the server whenever the code changes:
 npm install --save-dev nodemon
 
+Also, Linting command is used to check your code for linting errors
+npm run lint
+
 5) Debugging
 To run the vscode debug mode, navigate to the run and debug tab, and select the launch program configuration
 press f5 to start debugging
