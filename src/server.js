@@ -1,5 +1,5 @@
+require('dotenv').config();
 // src/server.js
-
 // We want to gracefully shutdown our server
 const stoppable = require('stoppable');
 
@@ -12,6 +12,11 @@ const app = require('./app');
 // Get the desired port from the process' environment. Default to `8080`
 const port = parseInt(process.env.PORT || '8080', 10);
 
+//if the log level is "debug" print all environment variables
+if (process.env.LOG_LEVEL === 'debug') {
+  console.log('Environment Variables: ', process.env);
+}
+
 // Start a server listening on this port
 const server = stoppable(
   app.listen(port, () => {
@@ -22,7 +27,3 @@ const server = stoppable(
 
 // Export our server instance so other parts of our code can access it if necessary.
 module.exports = server;
-
-
-
-//!Step number 22.

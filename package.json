@@ -9,7 +9,6 @@
     "start": "node src/server.js",
     "dev": "LOG_LEVEL=debug nodemon ./src/server.js --watch src",
     "debug": "LOG_LEVEL=debug nodemon --inspect=0.0.0.0:9229 ./src/server.js --watch src"
-    
   },
   "repository": {
     "type": "git",
@@ -25,10 +24,14 @@
     "prettier": "3.3.3"
   },
   "dependencies": {
+    "aws-jwt-verify": "^4.0.1",
     "compression": "^1.7.4",
     "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
     "express": "^4.19.2",
     "helmet": "^7.1.0",
+    "passport": "^0.7.0",
+    "passport-http-bearer": "^1.0.1",
     "pino": "^9.4.0",
     "pino-http": "^10.3.0",
     "pino-pretty": "^11.2.2",
