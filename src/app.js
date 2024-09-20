@@ -48,7 +48,7 @@ app.use((req, res) => {
 });
 
 // Global Error Handler
-app.use((err, req, res, next) => {
+app.use((err, req, res) => {
   const statusCode = err.status || 500;
   const message = err.message || 'Internal Server Error';
   res.status(statusCode).json(createErrorResponse(message, statusCode));
