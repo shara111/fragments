@@ -9,6 +9,9 @@ const { version, author } = require('../../package.json');
 // Create a router that we can use to mount our API
 const router = express.Router();
 
+const { createSuccessResponse } = require('../response'); // Use '../' to go up one level
+
+
 /**
  * Expose all of our API routes on /v1/* to include an API version.
  * Protect them all with middleware so you have to be authenticated
@@ -21,16 +24,15 @@ router.use(`/v1`, authenticate(), require('./api'));
  * we'll respond with a 200 OK. If not, the server isn't healthy.
  */
 router.get('/', (req, res) => {
-  // Clients shouldn't cache this response (always request it fresh)
-  res.setHeader('Cache-Control', 'no-cache');
-  // Send a 200 'OK' response with info about our repo
-  res.status(200).json({
+  res.set('Cache-Control', 'no-cache');
+  const responseData = {
     status: 'ok',
-    author,
-    // TODO: change this to use your GitHub username!
-    githubUrl: 'https://github.com/shara111/fragments',
     version,
-  });
+    githubUrl: 'https://github.com/shara111/fragments',
+    author: 'Sukhman Hara',
+  };
+
+  res.status(200).json(createSuccessResponse(responseData));
 });
 
 module.exports = router;

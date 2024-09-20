@@ -7,6 +7,10 @@ const compression = require('compression');
 const passport = require('passport'); // Import Passport
 
 const logger = require('./logger');
+
+const { createErrorResponse } = require('./response'); // Import the function
+
+
 const pino = require('pino-http')({
   logger,
 });
@@ -36,33 +40,18 @@ app.use(passport.initialize());        // Initialize Passport
 // Define our routes
 app.use('/', require('./routes'));      // Define all routes (including protected routes)
 
-// Add 404 middleware to handle any requests for resources that can't be found
+
+
+// Default 404 Error Handler
 app.use((req, res) => {
-  res.status(404).json({
-    status: 'error',
-    error: {
-      message: 'not found',
-      code: 404,
-    },
-  });
+  res.status(404).json(createErrorResponse('Resource not found', 404));
 });
 
-// Add error-handling middleware to deal with any other issues
-app.use((err, req, res) => {
-  const status = err.status || 500;
-  const message = err.message || 'unable to process request';
-
-  if (status > 499) {
-    logger.error({ err }, `Error processing request`);
-  }
-
-  res.status(status).json({
-    status: 'error',
-    error: {
-      message,
-      code: status,
-    },
-  });
+// Global Error Handler
+app.use((err, req, res, next) => {
+  const statusCode = err.status || 500;
+  const message = err.message || 'Internal Server Error';
+  res.status(statusCode).json(createErrorResponse(message, statusCode));
 });
 
 // Export our `app` so we can access it in server.js

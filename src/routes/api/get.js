@@ -1,12 +1,10 @@
-// src/routes/api/get.js
+// GET /v1/fragments
+ const { createSuccessResponse, createErrorResponse } = require('../../response'); 
+//Import the functions 
+const { getFragmentsByUser } = require('./index'); 
+// Adjust according to your data handling logic // GET /v1/fragments 
+module.exports = async (req, res) => {
+   res.status(200).json(createSuccessResponse({fragments: []})) 
+  };
 
-/**
- * Get a list of fragments for the current user
- */
-module.exports = (req, res) => {
-  // TODO: this is just a placeholder to get something working
-  res.status(200).json({
-    status: 'ok',
-    fragments: [],
-  });
-};
+
