@@ -4,13 +4,12 @@ const express = require('express');
 const { authenticate } = require('../auth');
 
 // version and author from package.json
-const { version} = require('../../package.json');
+const { version } = require('../../package.json');
 
 // Create a router that we can use to mount our API
 const router = express.Router();
 
 const { createSuccessResponse } = require('../response'); // Use '../' to go up one level
-
 
 /**
  * Expose all of our API routes on /v1/* to include an API version.

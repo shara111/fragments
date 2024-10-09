@@ -1,4 +1,4 @@
-require('dotenv').config();
+require('dotenv').config({ path: 'env.jest' });
 // src/server.js
 // We want to gracefully shutdown our server
 const stoppable = require('stoppable');
@@ -19,11 +19,14 @@ if (process.env.LOG_LEVEL === 'debug') {
 
 // Start a server listening on this port
 const server = stoppable(
-  app.listen(port, () => {
-    // Log a message that the server has started, and which port it's using.
+  app.listen(port, (err) => {
+    if (err) {
+      logger.error(`Error starting server: ${err}`);
+      process.exit(1);
+    }
+    console.log(`Server started on port ${port}`);
     logger.info(`Server started on port ${port}`);
   })
 );
-
 // Export our server instance so other parts of our code can access it if necessary.
 module.exports = server;
