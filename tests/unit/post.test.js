@@ -1,5 +1,5 @@
 const request = require('supertest');
-const hash = require('../../src/hash');
+// const hash = require('../../src/hash');
 const app = require('../../src/app');
 
 describe('POST /v1/fragments', () => {

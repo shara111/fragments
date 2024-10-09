@@ -2,7 +2,7 @@ const passport = require('passport');
 const { createErrorResponse } = require('../response');
 const hash = require('../hash');
 const logger = require('../logger');
-const BearerStrategy = require('passport-http-bearer').Strategy;
+// const BearerStrategy = require('passport-http-bearer').Strategy;
 
 
 /**

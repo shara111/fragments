@@ -39,7 +39,6 @@ async function listFragments(ownerId, expand = false) {
 
 // Delete a fragment's metadata and data from memory db. Returns a Promise
 async function deleteFragment(ownerId, id) {
-    try {
       // Check if the fragment exists before trying to delete it
       const fragmentExists = await metadata.get(ownerId, id);
       const dataExists = await data.get(ownerId, id);
@@ -55,11 +54,7 @@ async function deleteFragment(ownerId, id) {
         data.del(ownerId, id),
       ]);
       return true; //Return true when deletion is successful
-    } catch (err) {
-      // Handle other unexpected errors
-      throw err;
-    }
-  }  
+    }  
 
 module.exports.listFragments = listFragments;
 module.exports.writeFragment = writeFragment;
