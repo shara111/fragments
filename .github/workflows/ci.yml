@@ -34,7 +34,19 @@ jobs:
         run: npm ci
 
       - name: Run ESLint
-        run: npm run lint
+        run:
+          npm run lint
+
+          # Lint our Dockerfile using Hadolint
+  dockerfile-lint:
+    name: Dockerfile Lint
+    runs-on: ubuntu-latest
+    steps:
+      # https://github.com/marketplace/actions/hadolint-action
+      - uses: actions/checkout@v4
+      - uses: hadolint/hadolint-action@v3.1.0
+        with:
+          dockerfile: Dockerfile
 
   unit-tests:
     name: Unit Tests
