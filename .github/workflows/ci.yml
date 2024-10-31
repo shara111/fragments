@@ -96,7 +96,7 @@ jobs:
           # Define an Environment Variable with our Docker Hub Repo
           # Replace `username` with your Docker Hub username and `fragments
           # with whatever you've named your Docker Hub repo
-          DOCKERHUB_REPO: username/fragments
+          DOCKERHUB_REPO: shara1/fragments
           # Define an Environment Variable with the current git commit's
           # sha: sha-87f664e01bb5f242faa411e9e7fb9e75a58ae767
           # Use the `github` context to get this, see:
