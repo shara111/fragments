@@ -1,0 +1,77 @@
+# Continuous Delivery Workflow
+#
+# This should happen whenever we push a new tag, and we tag an existing
+# commit after we know it's good (e.g., has been tested).
+#
+# To create a new tag, we also need to update the package.json version:
+#
+# $ npm version 0.5.0
+#
+# This will update `version` in package.json to `0.5.0` and create a new
+# tag, `v0.5.0` in git. We'll then use this tag (i.e., `v0.5.0`) to tag
+# our docker image before we push to AWS.
+
+name: cd
+
+on:
+  push:
+    # Whenever a new tag is pushed
+    tags:
+      # Any tag starting with v... should trigger this workflow.
+      - 'v**'
+
+jobs:
+  # NOTE: this assumes our CI jobs have already passed previously
+  # (i.e., that we don't tag a commit manually until we know a build is working)
+  aws:
+    name: AWS
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Check out code
+      - name: Check out code
+        uses: actions/checkout@v4
+
+      # Step 2: Use buildx, which is faster and can optimize the build steps
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      # Step 3: Configure AWS Credentials using Secrets
+      # NOTE: ending and restarting the Learner Lab will void these secrets,
+      # update them if you are doing this during a new session:
+      # `Error: The security token included in the request is expired`
+      - name: Configure AWS Credentials using Secrets
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          # Use our GitHub Encrypted Secrets via secrets.*
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
+          # Hard-code our region, which isn't a secret, and won't change
+          aws-region: us-east-1
+
+      # Step 4: Login to our ECR repository using the configured credentials
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      # Step 5: Build and Push an Image to Amazon ECR
+      - name: Build and push to Amazon ECR
+        env:
+          # Define an Environment Variable with our ECR Registry, getting
+          # the value from the previous step's outputs
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          # Define an Environment Variable with our ECR Repository Name
+          ECR_REPO: fragments
+          # We'll give this image two different tags. First, we'll use the git tag (vX.Y.Z)
+          # so that we can always go back and re-create this setup again in the future
+          # if we have to test or debug something. Second, we'll also replace the
+          # `latest` tag, since this is our most up-to-date version.
+          VERSION_TAG: ${{ github.ref_name }}
+        uses: docker/build-push-action@v4
+        with:
+          push: true
+          # Use the git tag version and `latest`
+          tags: |
+            ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPO }}:${{ env.VERSION_TAG }}
+            ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPO }}:latest
