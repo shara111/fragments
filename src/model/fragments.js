@@ -38,6 +38,22 @@ class Fragment {
     this.type = type;
     this.size = size;
   }
+  // New static method to fetch fragments by owner with optional expand
+  static async getFragmentsByOwner(ownerId, expand = false) {
+    try {
+      const fragments = await listFragments(ownerId, expand);
+
+      if (expand) {
+        return fragments.map(fragment => new Fragment(fragment)); // Return full fragment objects
+      }
+
+      // If expand is false, return only the fragment IDs
+      return fragments.map(fragment => fragment.id);
+    } catch (error) {
+      logger.error(`Error fetching fragments for owner ${ownerId}: ${error.message}`);
+      throw new Error(`Error fetching fragments: ${error.message}`);
+    }
+  }
 
   // Fetch fragments by a specific user
   static async byUser(ownerId, expand = false) {
