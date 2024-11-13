@@ -35,7 +35,7 @@ app.use((req, res) => {
 });
 
 // Global error handler
-app.use((err, req, res, next) => {  // Added 'next' parameter for proper error handling
+app.use((err, req, res) => {  // Added 'next' parameter for proper error handling
   const statusCode = err.status || 500;
   const message = err.message || 'Internal Server Error';
   logger.error({ err, statusCode }, 'Global error handler caught an error'); // Log the error
