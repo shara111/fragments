@@ -18,20 +18,24 @@ const { createSuccessResponse } = require('../response'); // Use '../' to go up 
  */
 router.use(`/v1`, authenticate(), require('./api'));
 
+
+const { hostname } = require('os');
 /**
  * Define a simple health check route. If the server is running
  * we'll respond with a 200 OK. If not, the server isn't healthy.
  */
 router.get('/', (req, res) => {
-  res.set('Cache-Control', 'no-cache');
-  const responseData = {
-    status: 'ok',
-    version,
-    githubUrl: 'https://github.com/shara111/fragments',
-    author: 'Sukhman Hara',
-  };
-
-  res.status(200).json(createSuccessResponse(responseData));
+  res.setHeader('Cache-Control', 'no-cache');
+  res.status(200).json(
+    createSuccessResponse({
+      // TODO: make sure these are changed for your name and repo
+      author: 'Sukhman Hara',
+      githubUrl: 'https://github.com/shara111/fragments',
+      version,
+      // Include the hostname in the response
+      hostname: hostname(),
+    })
+  );
 });
 
 module.exports = router;
