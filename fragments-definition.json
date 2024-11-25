@@ -1,0 +1,118 @@
+{
+    "taskDefinitionArn": "arn:aws:ecs:us-east-1:049656201135:task-definition/fragments-task-new:2",
+    "containerDefinitions": [
+        {
+            "name": "fragments-container",
+            "image": "shara1/fragments-ecs-lab:latest",
+            "cpu": 256,
+            "memory": 256,
+            "memoryReservation": 256,
+            "portMappings": [
+                {
+                    "name": "fragments-container-80-tcp",
+                    "containerPort": 80,
+                    "hostPort": 80,
+                    "protocol": "tcp",
+                    "appProtocol": "http"
+                }
+            ],
+            "essential": true,
+            "environment": [
+                {
+                    "name": "AWS_REGION",
+                    "value": "us-east-1"
+                },
+                {
+                    "name": "PORT",
+                    "value": "80"
+                },
+                {
+                    "name": "COGNITO_CLIENT_ID",
+                    "value": "v1hs8a4k33cladr45tm9ltos7"
+                },
+                {
+                    "name": "COGNITO_USER_POOL_ID",
+                    "value": "east-1_BKpxJOfds"
+                },
+                {
+                    "name": "LOG_LEVEL",
+                    "value": "debug"
+                },
+                {
+                    "name": "HTPASSWD_FILE",
+                    "value": "/app/tests/.htpasswd"
+                }
+            ],
+            "environmentFiles": [],
+            "mountPoints": [],
+            "volumesFrom": [],
+            "ulimits": [],
+            "logConfiguration": {
+                "logDriver": "awslogs",
+                "options": {
+                    "awslogs-group": "/ecs/fragments-task",
+                    "mode": "non-blocking",
+                    "awslogs-create-group": "true",
+                    "max-buffer-size": "25m",
+                    "awslogs-region": "us-east-1",
+                    "awslogs-stream-prefix": "ecs"
+                },
+                "secretOptions": []
+            },
+            "systemControls": []
+        }
+    ],
+    "family": "fragments-task-new",
+    "taskRoleArn": "arn:aws:iam::049656201135:role/LabRole",
+    "executionRoleArn": "arn:aws:iam::049656201135:role/LabRole",
+    "networkMode": "awsvpc",
+    "revision": 2,
+    "volumes": [],
+    "status": "ACTIVE",
+    "requiresAttributes": [
+        {
+            "name": "com.amazonaws.ecs.capability.logging-driver.awslogs"
+        },
+        {
+            "name": "ecs.capability.execution-role-awslogs"
+        },
+        {
+            "name": "com.amazonaws.ecs.capability.docker-remote-api.1.19"
+        },
+        {
+            "name": "com.amazonaws.ecs.capability.docker-remote-api.1.28"
+        },
+        {
+            "name": "com.amazonaws.ecs.capability.docker-remote-api.1.21"
+        },
+        {
+            "name": "com.amazonaws.ecs.capability.task-iam-role"
+        },
+        {
+            "name": "com.amazonaws.ecs.capability.docker-remote-api.1.18"
+        },
+        {
+            "name": "ecs.capability.task-eni"
+        },
+        {
+            "name": "com.amazonaws.ecs.capability.docker-remote-api.1.29"
+        }
+    ],
+    "placementConstraints": [],
+    "compatibilities": [
+        "EC2",
+        "FARGATE"
+    ],
+    "requiresCompatibilities": [
+        "FARGATE"
+    ],
+    "cpu": "256",
+    "memory": "512",
+    "runtimePlatform": {
+        "cpuArchitecture": "X86_64",
+        "operatingSystemFamily": "LINUX"
+    },
+    "registeredAt": "2024-11-25T20:27:23.567Z",
+    "registeredBy": "arn:aws:sts::049656201135:assumed-role/voclabs/user3495232=Hara,_Sukhman",
+    "tags": []
+}
