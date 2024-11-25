@@ -19,9 +19,11 @@ RUN npm install
 
 # Copy the rest of the application code to the container
 COPY ./src ./src
+
+# Copy .htpasswd file if needed for tests
 COPY ./tests/.htpasswd ./tests/.htpasswd
 
-# Build the application if needed (uncomment the following line if you have a build step)
+# Uncomment if a build step is required
 # RUN npm run build
 
 # Stage 2: Production
@@ -36,8 +38,8 @@ COPY --from=build /app .
 # Set environment variable for the port
 ENV PORT=8080
 
-# Start the container by running the server
-CMD ["npm", "start"]
-
 # Expose the port the app runs on
 EXPOSE 8080
+
+# Run the container by default with environment variables
+CMD ["npm", "start"]
