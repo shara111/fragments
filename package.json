@@ -1,7 +1,7 @@
 {
   "name": "fragments",
   "private": true,
-  "version": "0.7.0",
+  "version": "0.7.1",
   "description": "Fragments back-end API",
   "scripts": {
     "test:watch": "jest -c jest.config.js --runInBand --watch --",
@@ -10,7 +10,7 @@
     "lint": "eslint \"./src/**/*.js\" \"tests/**/*.js\"",
     "start": "node src/server.js",
     "dev": "LOG_LEVEL=debug nodemon ./src/server.js --watch src",
-    "debug": "LOG_LEVEL=debug nodemon --inspect=0.0.0.0:9229 ./src/index.js --watch src", 
+    "debug": "LOG_LEVEL=debug nodemon --inspect=0.0.0.0:9229 ./src/index.js --watch src",
     "test:integration": "hurl --test --glob \"tests/integration/**/*.hurl\""
   },
   "repository": {
