@@ -40,6 +40,10 @@
                 {
                     "name": "HTPASSWD_FILE",
                     "value": "/app/tests/.htpasswd"
+                }, 
+                {
+                    "name": "AWS_S3_BUCKET_NAME",
+                    "value": "shara1-fragments" 
                 }
             ],
             "logConfiguration": {

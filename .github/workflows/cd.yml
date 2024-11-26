@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Step 1: Check out the repository
+      # Step 1: Checkout the repository
       - name: Checkout code
         uses: actions/checkout@v4
 
@@ -29,7 +29,7 @@ jobs:
         uses: aws-actions/amazon-ecr-login@v2
 
       # Step 4: Build and push Docker image to Amazon ECR
-      - name: Build and push to Amazon ECR
+      - name: Build and push Docker image to Amazon ECR
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           ECR_REPO: fragments
@@ -37,20 +37,18 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           push: true
-          tags: ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPO }}:${{ env.VERSION_TAG }}, ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPO }}:latest
+          tags: |
+            ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPO }}:${{ env.VERSION_TAG }}
+            ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPO }}:latest
 
       # Step 5: Update ECS Task Definition with the new Docker image and environment variables
-      - name: Fill in the new image ID in the Amazon ECS task definition
+      - name: Render ECS task definition with new image
         id: update-task-def
         uses: aws-actions/amazon-ecs-render-task-definition@v1
-        env:
-          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          ECR_REPO: fragments
-          VERSION_TAG: ${{ github.ref_name }}
         with:
           task-definition: fragments-definition.json
           container-name: fragments-container
-          image: ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPO }}:${{ env.VERSION_TAG }}
+          image: ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPO }}:${{ env.VERSION_TAG }}
           environment-variables: |
             LOG_LEVEL=debug
             NODE_ENV=production
@@ -60,8 +58,8 @@ jobs:
             API_URL=${{ secrets.API_URL }}
             HTPASSWD_FILE=/app/tests/.htpasswd
 
-      # Step 6: Deploy the updated Task Definition to ECS
-      - name: Deploy Amazon ECS task definition
+      # Step 6: Deploy the updated ECS Task Definition to ECS
+      - name: Deploy updated task definition to Amazon ECS
         uses: aws-actions/amazon-ecs-deploy-task-definition@v1
         with:
           task-definition: ${{ steps.update-task-def.outputs.task-definition }}

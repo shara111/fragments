@@ -9,6 +9,7 @@ const contentType = require('content-type');
 const getAllFragment = require('./get');
 const getId = require('./getid');
 const getInfo = require('./getinfo');
+const { deleteFragment } = require('./deletefragment');  // Import your delete function
 // Create a router on which to mount our API endpoints
 const router = express.Router();
 
@@ -35,5 +36,23 @@ const rawBody = () =>
 router.post('/fragments', rawBody(), require('./post'));
 
 // Other routes (POST, DELETE, etc.) will go here later on...
+// DELETE route for deleting fragments
+router.delete('/fragments/:id', async (req, res) => {
+  const { id } = req.params;
+  const ownerId = req.user.id;  // Assuming you have user authentication set up
+
+  try {
+    const success = await deleteFragment(ownerId, id);  // Call your delete function
+
+    if (success) {
+      res.status(200).send('Fragment deleted');
+    } else {
+      res.status(404).send('Fragment not found');
+    }
+  } catch (error) {
+    console.error('Error deleting fragment:', error);
+    res.status(500).send('Internal Server Error');
+  }
+});
 
 module.exports = router;
