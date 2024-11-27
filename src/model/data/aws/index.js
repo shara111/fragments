@@ -1,7 +1,7 @@
 const { s3, BUCKET_NAME } = require('./s3Client');
 const { PutObjectCommand, GetObjectCommand, DeleteObjectCommand } = require('@aws-sdk/client-s3');
 const logger = require('../../../logger'); // Adjust the path if necessary
-const metadata = require('../../memory-db'); // Adjust the path if necessary
+const metadata = require('../../../model/data/memory/memory-db'); // Adjust the path if necessary
 
 // Convert a stream of data into a Buffer
 const streamToBuffer = (stream) =>
