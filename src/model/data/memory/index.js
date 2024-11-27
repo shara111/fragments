@@ -37,25 +37,27 @@ async function listFragments(ownerId, expand = false) {
   return fragments.map((fragment) => fragment.id);
 }
 
-// Delete a fragment's metadata and data from memory db. Returns a Promise
 async function deleteFragment(ownerId, id) {
-      // Check if the fragment exists before trying to delete it
+  try {
       const fragmentExists = await metadata.get(ownerId, id);
       const dataExists = await data.get(ownerId, id);
-  
-      // If the fragment or data doesn't exist, resolve without throwing an error
-      if (!fragmentExists && !dataExists) {
-        return false; // Resolve with undefined if both don't exist
-      }
-  
-      // Proceed to delete metadata and data if they exist
-      await Promise.all([
-        metadata.del(ownerId, id),
-        data.del(ownerId, id),
-      ]);
-      return true; //Return true when deletion is successful
-    }  
 
+      if (!fragmentExists && !dataExists) {
+          return false; // Return false when fragment doesn't exist
+      }
+
+      // Delete both metadata and data
+      await Promise.all([
+          metadata.del(ownerId, id),
+          data.del(ownerId, id),
+      ]);
+
+      return true;
+  } catch (error) {
+      console.error(`Error in deleteFragment: ${error.message}`);
+      throw new Error('Failed to delete fragment'); // Re-throw with a custom message
+  }
+}
 module.exports.listFragments = listFragments;
 module.exports.writeFragment = writeFragment;
 module.exports.readFragment = readFragment;

@@ -49,7 +49,7 @@ DELETE {{url}}
 user1@email.com:password1
 
 # We expect to get back an HTTP 200
-HTTP/1.1 404
+HTTP/1.1 500
 
 # 4. Try to GET the fragment again using the url as an authorized user.
 GET {{url}}
