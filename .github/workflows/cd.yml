@@ -57,6 +57,7 @@ jobs:
             AWS_COGNITO_CLIENT_ID=${{ secrets.AWS_COGNITO_CLIENT_ID }}
             API_URL=${{ secrets.API_URL }}
             HTPASSWD_FILE=/app/tests/.htpasswd
+            AWS_DYNAMODB_TABLE_NAME=fragment
 
       # Step 6: Deploy the updated ECS Task Definition to ECS
       - name: Deploy updated task definition to Amazon ECS
