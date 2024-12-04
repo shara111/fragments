@@ -5,13 +5,13 @@ const logger = require('../../../logger'); // Adjust the path if necessary
 const ddbDocClient = require('./ddbDocClient');
 
 // Convert a stream of data into a Buffer (unused; remove or suppress linting)
-const streamToBuffer = (stream) =>
-  new Promise((resolve, reject) => {
-    const chunks = [];
-    stream.on('data', (chunk) => chunks.push(chunk));
-    stream.on('error', reject);
-    stream.on('end', () => resolve(Buffer.concat(chunks)));
-  });
+// const streamToBuffer = (stream) =>
+//   new Promise((resolve, reject) => {
+//     const chunks = [];
+//     stream.on('data', (chunk) => chunks.push(chunk));
+//     stream.on('error', reject);
+//     stream.on('end', () => resolve(Buffer.concat(chunks)));
+//   });
 
 // Writes a fragment to DynamoDB
 async function writeFragmentData(fragment) {
