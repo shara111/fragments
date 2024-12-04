@@ -1,50 +1,34 @@
-version: '3'
 services:
-  # Fragments microservice API server
   fragments:
+    init: true
     build: .
-    init: true  # Proper init process (e.g., tini)
     environment:
       - API_URL=http://localhost:8080
       - HTPASSWD_FILE=tests/.htpasswd
-      - LOG_LEVEL=${LOG_LEVEL:-info}  # Default log level if not set in host environment
-      - AWS_REGION=us-east-1  # Set the AWS region for all services
-      # Use the LocalStack endpoint for S3 AWS SDK clients
+      - LOG_LEVEL=${LOG_LEVEL:-debug}
+      # NOTE: we use Docker's internal network to the localstack container
       - AWS_S3_ENDPOINT_URL=http://localstack:4566
-      # Use the DynamoDB local endpoint for DynamoDB AWS SDK clients
+      # Use the DynamoDB local endpoint vs. AWS for DynamoDB AWS SDK clients.
       - AWS_DYNAMODB_ENDPOINT_URL=http://dynamodb-local:8000
-      # S3 bucket and DynamoDB table names (default to 'fragments' if not set)
+      # This S3 bucket and DynamoDB table need to get created first, see
+      # local-aws-setup.sh. We'll default to 'fragments' as the name, unless
+      # something else is defined in the env.
       - AWS_S3_BUCKET_NAME=${AWS_S3_BUCKET_NAME:-fragments}
       - AWS_DYNAMODB_TABLE_NAME=${AWS_DYNAMODB_TABLE_NAME:-fragments}
     ports:
       - '8080:8080'
-    volumes:
-      - .:/app  # Mount the project directory for live updates
-    networks:
-      - fragments-network  # Same network as other services for communication
 
   # DynamoDB Local, see: https://hub.docker.com/r/amazon/dynamodb-local
   dynamodb-local:
-    image: amazon/dynamodb-local  # Use the Amazon DynamoDB Local Docker image
+    image: amazon/dynamodb-local
     ports:
-      - '8000:8000'  # Expose port 8000 for DynamoDB Local (default port)
-    command: ['-jar', 'DynamoDBLocal.jar', '-inMemory']  # Run DynamoDB in memory (no data persistence)
-    environment:
-      - DB_HOST=localhost  # You can add any necessary environment variables here
-    networks:
-      - fragments-network  # Same network as fragments service for communication
+      - '8000:8000'
+    command: ['-jar', 'DynamoDBLocal.jar', '-inMemory']
 
-  # LocalStack for mocking AWS S3
   localstack:
-    image: localstack/localstack  # LocalStack Docker image to mock AWS services
+    image: localstack/localstack
     ports:
-      - '4566:4566'  # Expose port 4566 for LocalStack to interact with AWS services
+      - '4566:4566'
     environment:
-      - SERVICES=s3  # Only mock the S3 service
-      - DEFAULT_REGION=us-east-1  # Set the default AWS region for LocalStack
-    networks:
-      - fragments-network  # Same network as fragments and dynamodb-local services for communication
-
-networks:
-  fragments-network:
-    driver: bridge  # Use a bridge network to allow services to communicate
+      - SERVICES=s3
+      - DEFAULT_REGION=us-east-1

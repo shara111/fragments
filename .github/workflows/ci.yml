@@ -59,9 +59,38 @@ jobs:
       - name: Install dependencies and run tests
         run: npm install-ci-test
 
+  integration-tests:
+    name: Integration Tests
+    needs: [unit-tests] # Ensure unit tests pass first
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 'lts/*'
+          cache: 'npm'
+
+      - name: Install node dependencies
+        # Install both production and dev dependencies
+        run: npm install
+
+      - name: Build Containers
+        run: docker compose up -d
+
+      - name: Setup Local AWS Resources
+        # NOTE: Make this file executable before committing:
+        # chmod +x ./scripts/local-aws-setup.sh
+        run: ./scripts/local-aws-setup.sh
+
+      - name: Run Integration Tests
+        run: npm run test:integration
+
   docker-hub:
     name: Build and Push to Docker Hub
-    needs: [lint, dockerfile-lint, unit-tests]  # Ensure these jobs run first
+    needs: [lint, dockerfile-lint, unit-tests, integration-tests]  # Ensure all tests pass first
     runs-on: ubuntu-latest
     steps:
       # Set up buildx for optimal Docker Builds
