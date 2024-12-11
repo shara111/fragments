@@ -22,4 +22,4 @@ user1@email.com:password1
 HTTP/1.1 200
 [Asserts]
 header "Content-Type" matches "text/plain(; charset=utf-8)?"
-body matches "^\\{\"type\":\"Buffer\",\"data\":\\[84,104,105,115,32,105,115,32,97,32,102,114,97,103,109,101,110,116,32,119,105,116,104,32,99,104,97,114,115,101,116\\]}$"
+body matches "This is a fragment with charset"

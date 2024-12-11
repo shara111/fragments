@@ -1,19 +1,8 @@
 const request = require('supertest');
 const app = require('../../src/app');
 
-const createFragment = async (auth, contentType, content) => {
-  const response = await request(app)
-    .post('/v1/fragments')
-    .auth(auth.email, auth.password)
-    .set('Content-Type', contentType)
-    .send(content);
-
-  return JSON.parse(response.text).fragment.id;
-};
-
 describe('PUT /v1/fragments', () => {
   const authUser1 = { email: 'user1@email.com', password: 'password1' };
-  const authUser2 = { email: 'user2@email.com', password: 'password2' };
 
   test('returns 401 for unauthenticated requests', async () => {
     const response = await request(app).put('/v1/fragments/random');

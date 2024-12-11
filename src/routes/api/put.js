@@ -1,4 +1,4 @@
-const { createFragment, updateFragment, getFragmentById } = require('./fragment'); // Import necessary functions
+const { updateFragment, getFragmentById } = require('./fragment'); // Import necessary functions
 const logger = require('./logger');
 
 /**
