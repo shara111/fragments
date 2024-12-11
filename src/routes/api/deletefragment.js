@@ -1,23 +1,17 @@
-const { deleteFragment } = require('../../model/data/aws/index');
-async function deleteFragmentRoute(req, res) {
+const logger = require('../../logger');
+const { Fragment } = require('../../model/fragments');
+const { createSuccessResponse, createErrorResponse } = require('../../response');
+module.exports = async (req, res) => {
+  logger.debug(`owner id and id: ${req.user}, ${req.params.id}`);
+  const id = req.params.id.split('.')[0];
   try {
-      const { id } = req.params;
-      const ownerId = req.user.ownerId;
-
-      console.log(`Attempting to delete fragment with id: ${id} for owner: ${ownerId}`);
-
-      const success = await deleteFragment(ownerId, id);
-
-      if (!success) {
-          console.log(`Fragment with id: ${id} not found.`);
-          return res.status(404).json({ error: 'Fragment not found' });
-      }
-
-      console.log(`Fragment with id: ${id} successfully deleted.`);
-      res.status(200).json({ success: true, message: 'Fragment deleted successfully' });
-  } catch (error) {
-      console.error(`Error deleting fragment: ${error.message}`);
-      res.status(500).json({ error: 'Failed to delete fragment', details: error.message });
+    const fragment = await Fragment.byId(req.user, id);
+    if (!fragment) {
+      return res.status(404).json(createErrorResponse(404, 'Id not found'));
+    }
+    await Fragment.delete(req.user, id);
+    res.status(200).json(createSuccessResponse());
+  } catch (e) {
+    res.status(500).json(createErrorResponse(500, e.message));
   }
-}
-module.exports = { deleteFragmentRoute };
+};

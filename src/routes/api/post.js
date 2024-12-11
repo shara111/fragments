@@ -6,7 +6,10 @@ require('dotenv').config();
 const API_URL = process.env.API_URL || 'http://localhost:8080';
 
 // Helper function to validate Content-Type
-const isValidContentType = (type) => ['text/plain', 'application/json', 'text/markdown'].includes(type?.trim());
+const isValidContentType = (type) =>
+  ['text/plain', 'application/json', 'text/markdown', 'image/png', 'image/jpeg'].includes(
+    type?.trim()
+  );
 
 module.exports = async (req, res) => {
   try {
@@ -33,8 +36,8 @@ module.exports = async (req, res) => {
     }
     logger.debug('Authenticated user:', req.user);
 
-    const body = req.body ? (typeof req.body === 'object' ? JSON.stringify(req.body) : req.body.toString()) : null;
-    if (!body) {
+    const body = req.body instanceof Buffer ? req.body : Buffer.from(req.body || '');
+    if (!body.length) {
       logger.debug('Request body is empty or invalid');
       return res.status(400).json(createErrorResponse(400, 'Request body is required'));
     }
@@ -53,7 +56,7 @@ module.exports = async (req, res) => {
       const location = `${API_URL}/v1/fragments/${fragment.id}`;
       res.setHeader('Location', location);
 
-      return res.status(201).json(createSuccessResponse(fragment));
+      return res.status(201).json(createSuccessResponse({ fragment }));
     }
 
     const fragment = new Fragment({
@@ -75,7 +78,19 @@ module.exports = async (req, res) => {
     const location = `${API_URL}/v1/fragments/${fragment.id}`;
     res.setHeader('Location', location);
 
-    res.status(201).json(createSuccessResponse(fragment));
+    // Ensure the response includes all relevant metadata, including the fragment ID
+    res.status(201).json(
+      createSuccessResponse({
+        fragment: {
+          id: fragment.id,
+          ownerId: fragment.ownerId,
+          type: fragment.type,
+          size: fragment.size,
+          created: fragment.created,
+          updated: fragment.updated,
+        },
+      })
+    );
   } catch (err) {
     logger.error('Unexpected error in POST /fragments:', err.message, err.stack);
     res.status(500).json(createErrorResponse(500, 'Internal Server Error'));
