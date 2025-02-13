@@ -1,9 +1,8 @@
 # fragments
-CloudComputing: Lab01
 Various scripts that I created were lint, start, dev, and debug.
 
 ##Prerequisites
-Node.j: Make sure you have Node.js installed. You can download it from https://nodejs.org
+Node.js: Make sure you have Node.js installed. You can download it from https://nodejs.org
 Npm: Make sure you have Npm installed as it usually comes with node.js
 
 Installation
